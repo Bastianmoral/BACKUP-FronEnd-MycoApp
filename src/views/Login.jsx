@@ -1,16 +1,25 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 
-function Login() {
+const Login = () =>  {
+  const context = useContext(Context)
   const { store, actions } = useContext(Context);
-  const [state, setState] = useState({ email: "", password: "" });
+  const [formLogin, setFormLogin] = useState({ 
+    email: "", 
+    password: "" 
+  });
 
-  const handleSubmitLogin = (e) => {
+  const [error, setError] = useState(null);
+  
+  const handleSubmit = (e) => {
     e.preventDefault();
-    actions.handleSubmitLogin(state);
+    context.actions.register_user()
   };
+  
   const handleChange = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value });
+    setFormLogin({ 
+      ...formLogin, 
+      [e.target.name]: e.target.value });
   };
   return (
     <>
@@ -72,16 +81,17 @@ function Login() {
         </div>
         <div className="row justify-content-center">
           <div className="col-4 align-self-center">
-            <form className="clase-form" onSubmit={(e) => handleSubmitLogin(e)}>
+            <form className="clase-form" onSubmit={(e) => handleSubmit(e)}>
               <div className="mb-3">
                 <h6 className="text-muted">Inicia sesión</h6>
-                <label for="exampleInputEmail1" className="form-label">
+                <label className="form-label">
                   Correo electrónico
                 </label>
                 <input
                   type="email"
                   name="email"
-                  onChange={(e) => actions.handleChange(e)}
+                  value={formLogin.email}
+                  onChange={handleChange}                  
                   className="form-control"
                   id="exampleInputEmail1"
                   aria-describedby="emailHelp"
@@ -91,13 +101,14 @@ function Login() {
                 </div>
               </div>
               <div className="mb-3">
-                <label for="exampleInputPassword1" className="form-label">
+                <label className="form-label">
                   Contraseña
                 </label>
                 <input
                   type="password"
                   name="password"
-                  onChange={(e) => actions.handleChange(e)}
+                  value={formLogin.password}
+                  onChange={handleChange}
                   className="form-control"
                   id="exampleInputPassword1"
                 />
@@ -108,7 +119,7 @@ function Login() {
               <div>
                 <hr />
                 <h6 className="text-muted">¿Nuevo por acá?</h6>
-                <a className="btn btn-primary">Regístrate</a>
+                <div className="btn btn-primary">Regístrate</div>
               </div>
             </form>
           </div>

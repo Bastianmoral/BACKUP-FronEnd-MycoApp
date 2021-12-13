@@ -156,7 +156,7 @@ function CollabForm() {
           </div>
           <div className="row">
             <div className="col">
-              <label for="inputEmail4" className="form-label">
+              <label className="form-label">
                 Pileo
               </label>
               <div className="contenido mb-3">
@@ -201,7 +201,7 @@ function CollabForm() {
               </div>
             </div>
             <div className="col">
-              <label for="inputEmail4" className="form-label">
+              <label className="form-label">
                 Pie
               </label>
               <div className="contenido mb-3">

@@ -2,82 +2,113 @@ import { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 
 const Register = () => {
-  const { actions } = useContext(Context);
-  const [state, setState] = useState({
+  const store = useContext(Context)
+  const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     email: "",
     password: ''
   });
+
+  const [error, setError] = useState(null);
+
+  const validatePassword= (password)  => {
+    console.log(password, typeof password, password.length);
+    if (password.length <= 6) {
+      setError("Tu contraseña debe tener mas de 7 caracteres");
+    } else {
+      setError(null);
+    }
+    return;
+  }
+
+  const validateEmail = (email) => {
+    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    if (!email.match(regex)) {
+      setError("Tu email debe tener un formato válido");
+    } 
+    return email.toLowerCase();
+  }
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    actions.sendFormRegister(state);
+    console.log(formData);
+    validatePassword(formData.password);
+    const parseEmail = validateEmail(formData.email);
+    store.actions.register_user(formData);
   };
   const handleChange = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value });
+    setFormData({ 
+      ...formData, 
+      [e.target.name]: e.target.value });
   };
   return (
-    <div className="col-6 offset-3">
-      <h1 className="fst-italic">Register</h1>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <div className="mb-3">
-          <label for="exampleInputName1" className="form-label">
-            Nombre
-          </label>
+    <div className="container">
+    <div className="row">
+      <div className="col-md-6 mt-5 mx-auto">
+        <label> {error && error}</label> 
+      <form noValidate onSubmit={handleSubmit}>
+        <h1 className="h3 mb-3 font-weight-normal"> Registro</h1> 
+        <div className="form-group">
+          <label htmlFor="first_name">Primer nombre</label>
           <input
             type="text"
+            className="form-control"
             name="first_name"
-            className="form-control"
-            id="exampleInputLastName1"
-            aria-describedby="emailHelp"
-            onChange={(e) => handleChange(e)}
+            placeholder="nombre"
+            value={formData.first_name}
+            onChange={handleChange} 
           />
         </div>
-        <div className="mb-3">
-          <label for="exampleInputEmail1" className="form-label">
-            Apellido
-          </label>
+        <div className="form-group">
+          <label htmlFor="last_name">Apellidos</label>
           <input
             type="text"
-            name="Last_name"
             className="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-            onChange={(e) => handleChange(e)}
+            name="last_name"
+            placeholder="Apellidos"
+            value={formData.last_name}
+            onChange={handleChange} 
           />
-          <div id="emailHelp" className="form-text">
-            We'll never share your email with anyone else.
-          </div>
         </div>
-        <div className="mb-3">
-          <label for="exampleInputPassword1" className="form-label">
-            Correo
-          </label>
+        <div className="form-group">
+          <label htmlFor="email">Correo electrónico</label>
           <input
-            type="email"
+            type="text"
+            className="form-control"
             name="email"
-            className="form-control"
-            id="exampleInputPassword1"
-            onChange={(e) => handleChange(e)}
+            placeholder="nombre"
+            value={formData.email}
+            onChange={handleChange} 
           />
         </div>
-        <div className="mb-3">
-          <label for="exampleInputPassword1" className="form-label">
-            Contraseña
-          </label>
+        <div className="form-group">
+          <label htmlFor="password">password</label>
           <input
-            type="password"
-            name="password"
+            type="text"
             className="form-control"
-            id="exampleInputPassword1"
-            onChange={(e) => handleChange(e)}
+            name="password"
+            placeholder="password"
+            value={formData.password}
+            onChange={handleChange} 
           />
         </div>
+        <button
+          type="submit"
+          className="btn btn-lg btn-success btn-block"
+        >
+          Registrate
 
-        <button type="submit" className="btn btn-primary">
-          Register
         </button>
       </form>
+
+      </div>
+
+    </div>
+
+
+
     </div>
   );
 };
@@ -97,7 +128,7 @@ export default Register;
               placeholder="Nombre"
               data-sb-validations="required"
             />
-            <label for="nombre">Nombre</label>
+            <label ">Nombre</label>
             <div
               className="invalid-feedback"
               data-sb-feedback="nombre:required"
@@ -114,7 +145,7 @@ export default Register;
               style="height: 10rem;"
               data-sb-validations="required"
             ></textarea>
-            <label for="apellido">Apellido</label>
+            <label">Apellido</label>
             <div
               className="invalid-feedback"
               data-sb-feedback="apellido:required"
@@ -130,7 +161,7 @@ export default Register;
               placeholder="Email"
               data-sb-validations="required"
             />
-            <label for="email">Email</label>
+            <label>Email</label>
             <div className="invalid-feedback" data-sb-feedback="email:required">
               Email is required.
             </div>
@@ -143,7 +174,7 @@ export default Register;
               placeholder="Password"
               data-sb-validations="required"
             />
-            <label for="password">Password</label>
+            <label>Password</label>
             <div
               className="invalid-feedback"
               data-sb-feedback="password:required"
